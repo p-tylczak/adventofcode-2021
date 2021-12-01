@@ -5,6 +5,8 @@ import org.junit.jupiter.params.provider.ValueSource;
 
 import java.io.IOException;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 class Day02Test {
 
     private final Day02 day02 = new Day02();
@@ -12,7 +14,8 @@ class Day02Test {
     @ParameterizedTest
     @ValueSource(strings = {"src/test/resources/day02.txt"})
     void part1(String fileName) throws IOException {
-        day02.part1(fileName);
+        var result = day02.part1(fileName);
+        assertThat(result).isEqualTo(0);
     }
 
     @ParameterizedTest

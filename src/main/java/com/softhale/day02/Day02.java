@@ -8,7 +8,8 @@ public class Day02 {
 
     private final ParserUtils parserUtils = new ParserUtils();
 
-    public void part1(String filePath) throws IOException {
+    public int part1(String filePath) throws IOException {
+        return 0;
     }
 
     public void part2(String filePath) throws IOException {
