@@ -1,10 +1,10 @@
-package com.softhale.day02;
+package com.softhale.day03;
 
 import com.softhale.utils.ParserUtils;
 
 import java.io.IOException;
 
-public class Day02 {
+public class Day03 {
 
     private final ParserUtils parserUtils = new ParserUtils();
 
