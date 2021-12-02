@@ -12,6 +12,7 @@ public class Day03 {
         return 0;
     }
 
-    public void part2(String filePath) throws IOException {
+    public int part2(String filePath) throws IOException {
+        return 0;
     }
 }
