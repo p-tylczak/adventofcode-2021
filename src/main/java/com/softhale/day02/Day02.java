@@ -12,8 +12,7 @@ public class Day02 {
         var horizontalPosition = new AtomicInteger();
         var depth = new AtomicInteger();
 
-        parserUtils.readLines(filePath).stream()
-                .map(this::toCommand)
+        parserUtils.parse(filePath, this::toCommand)
                 .forEach(cmd -> {
                     switch (cmd.cmd()) {
                         case forward -> horizontalPosition.getAndAdd(cmd.value());
@@ -30,8 +29,7 @@ public class Day02 {
         var depth = new AtomicInteger();
         var aim = new AtomicInteger();
 
-        parserUtils.readLines(filePath).stream()
-                .map(this::toCommand)
+        parserUtils.parse(filePath, this::toCommand)
                 .forEach(cmd -> {
                     switch (cmd.cmd()) {
                         case forward -> {

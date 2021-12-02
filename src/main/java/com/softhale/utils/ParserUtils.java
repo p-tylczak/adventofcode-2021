@@ -7,6 +7,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Function;
 
 public class ParserUtils {
 
@@ -51,5 +52,12 @@ public class ParserUtils {
         }
 
         throw new RuntimeException(String.format("Unable to open file: %s", fileName));
+    }
+
+    public <T> List<T> parse(String filePath, Function<String, T> mappingFn) {
+        return readLines(filePath).stream()
+                .filter(StringUtils::isNotBlank)
+                .map(mappingFn)
+                .toList();
     }
 }
