@@ -11,15 +11,15 @@ public class Day03Test {
     private final Day03 day03 = new Day03();
 
     @Test
-    void part1_whenTestData_shouldReturn() throws IOException {
+    void part1_whenTestData_shouldReturn198() throws IOException {
         var result = day03.part1("src/test/resources/day03.txt");
-        assertThat(result).isEqualTo(0);
+        assertThat(result).isEqualTo(198);
     }
 
     @Test
     void part1_whenRealData_shouldReturn() throws IOException {
         var result = day03.part1("src/main/resources/day03.txt");
-        assertThat(result).isEqualTo(0);
+        assertThat(result).isEqualTo(2648450);
     }
 
     @Test
