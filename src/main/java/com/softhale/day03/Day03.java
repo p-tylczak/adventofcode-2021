@@ -1,18 +1,18 @@
 package com.softhale.day03;
 
+import com.softhale.utils.BoardUtils;
 import com.softhale.utils.ParserUtils;
 import org.apache.commons.lang3.StringUtils;
 
-import java.awt.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.function.Function;
 
 public class Day03 {
 
     private final ParserUtils parserUtils = new ParserUtils();
+    private final BoardUtils boardUtils = new BoardUtils();
 
     public int part1(String filePath) {
         var lines = parserUtils.readLines(filePath);
@@ -59,7 +59,7 @@ public class Day03 {
     public int part2(String filePath) {
         var lines = parserUtils.readLines(filePath);
 
-        var cells = toCells(
+        var cells = boardUtils.toCells(
                 lines,
                 s -> s.chars().mapToObj(c -> (char) c).toList());
 
@@ -69,7 +69,7 @@ public class Day03 {
         return oxygenGeneratorRating * co2ScrubberRating;
     }
 
-    private int calculateOxygenGeneratorRating(List<Cell<Character>> cells, List<String> lines, int bitIndex) {
+    private int calculateOxygenGeneratorRating(List<BoardUtils.Cell<Character>> cells, List<String> lines, int bitIndex) {
         if (lines.size() == 1) {
             return Integer.parseInt(lines.get(0), 2);
         }
@@ -84,14 +84,14 @@ public class Day03 {
                 .filter(line -> line.charAt(bitIndex) == charToMatch)
                 .toList();
 
-        var filteredCells = toCells(
+        var filteredCells = boardUtils.toCells(
                 filteredLines,
                 s -> s.chars().mapToObj(c -> (char) c).toList());
 
         return calculateOxygenGeneratorRating(filteredCells, filteredLines, bitIndex + 1);
     }
 
-    private int calculateCO2ScrubberRating(List<Cell<Character>> cells, List<String> lines, int bitIndex) {
+    private int calculateCO2ScrubberRating(List<BoardUtils.Cell<Character>> cells, List<String> lines, int bitIndex) {
         if (lines.size() == 1) {
             return Integer.parseInt(lines.get(0), 2);
         }
@@ -106,7 +106,7 @@ public class Day03 {
                 .filter(line -> line.charAt(bitIndex) == charToMatch)
                 .toList();
 
-        var filteredCells = toCells(
+        var filteredCells = boardUtils.toCells(
                 filteredLines,
                 s -> s.chars().mapToObj(c -> (char) c).toList());
 
@@ -125,33 +125,13 @@ public class Day03 {
         return map;
     }
 
-    private String extractColumnValues(List<Cell<Character>> cells, int columnIndex) {
+    private String extractColumnValues(List<BoardUtils.Cell<Character>> cells, int columnIndex) {
         var stringBuilder = new StringBuilder();
 
         cells.stream()
                 .filter(c -> c.location().x == columnIndex)
-                .forEach(c -> stringBuilder.append(c.content));
+                .forEach(c -> stringBuilder.append(c.content()));
 
         return stringBuilder.toString();
-    }
-
-    private <T> List<Cell<T>> toCells(List<String> lines,
-                                      Function<String, List<T>> lineToTypeConverterFn) {
-        var cells = new ArrayList<Cell<T>>();
-
-        for (int y = 0; y < lines.size(); y++) {
-            var ts = lineToTypeConverterFn.apply(lines.get(y));
-
-            for (int x = 0; x < ts.size(); x++) {
-                var cell = new Cell<T>(new Point(x, y), ts.get(x));
-                cells.add(cell);
-            }
-        }
-
-        return cells;
-    }
-
-
-    public static record Cell<T>(Point location, T content) {
     }
 }
