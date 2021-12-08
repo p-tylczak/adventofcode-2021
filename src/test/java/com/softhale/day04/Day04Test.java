@@ -21,14 +21,14 @@ public class Day04Test {
     }
 
     @Test
-    void part2_whenTestData_shouldReturn230() {
+    void part2_whenTestData_shouldReturn1924() {
         var result = day04.part2("src/test/resources/day04.txt");
-        assertThat(result).isEqualTo(230);
+        assertThat(result).isEqualTo(1924);
     }
 
     @Test
     void part2_whenRealData_shouldReturnCorrectValue() {
         var result = day04.part2("src/main/resources/day04.txt");
-        assertThat(result).isEqualTo(2845944);
+        assertThat(result).isEqualTo(23042);
     }
 }

@@ -39,7 +39,24 @@ public class Day04 {
     }
 
     public int part2(String filePath) {
-        return 0;
+        var lines = parserUtils.readLines(filePath);
+        var chunks = parserUtils.getChunks(lines);
+
+        var bingoInput = Arrays.stream(chunks.get(0).get(0).split(","))
+                .map(Integer::valueOf)
+                .toList();
+        var bingoBoards = chunks.stream().skip(1).toList();
+
+        var winningBoard = playBingoGamesUntilLast(bingoInput, bingoBoards);
+
+        var lastDrawnNumber = winningBoard.getLastDrawnNumber().orElse(0);
+        var sumOfUnmarked = winningBoard.cells.stream()
+                .filter(c -> !c.content().isMarked())
+                .map(c -> c.content().getValue())
+                .reduce(Integer::sum)
+                .orElse(0);
+
+        return lastDrawnNumber * sumOfUnmarked;
     }
 
     private BingoGame playBingoGames(List<Integer> bingoInput, List<List<String>> bingoBoards) {
@@ -61,6 +78,27 @@ public class Day04 {
         throw new IllegalStateException("Surely, some bingo boards must have won!");
     }
 
+    private BingoGame playBingoGamesUntilLast(List<Integer> bingoInput, List<List<String>> bingoBoards) {
+        var bingoGames = bingoBoards.stream()
+                .map(bingo -> boardUtils.toCells(bingo, this::lineToIntConvertFn))
+                .map(BingoGame::new)
+                .toList();
+
+        var listOfWonGames = new ArrayList<BingoGame>();
+
+        for (var number : bingoInput) {
+            for (BingoGame game : bingoGames.stream().filter(g -> g.getStatus() == RUNNING).toList()) {
+                game.play(number);
+
+                if (game.getStatus() == WON) {
+                    listOfWonGames.add(game);
+                }
+            }
+        }
+
+        return listOfWonGames.get(bingoGames.size() - 1);
+    }
+
     private List<BingoCell> lineToIntConvertFn(String line) {
         return Arrays.stream(line.split(" "))
                 .filter(StringUtils::isNotBlank)
@@ -71,7 +109,7 @@ public class Day04 {
 
     private static class BingoGame {
         private final List<BoardUtils.Cell<BingoCell>> cells;
-        private BingoGameStatus status;
+        private BingoGameStatus status = RUNNING;
         private final List<Integer> drawnNumbers = new ArrayList<>();
 
         public BingoGame(List<BoardUtils.Cell<BingoCell>> cells) {
