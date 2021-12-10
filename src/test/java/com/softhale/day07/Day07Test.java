@@ -23,12 +23,12 @@ public class Day07Test {
     @Test
     void part2_whenTestData_shouldReturnCorrectValue() {
         var result = day07.part2("src/test/resources/day07.txt");
-        assertThat(result).isEqualTo(-1);
+        assertThat(result).isEqualTo(168);
     }
 
     @Test
     void part2_whenRealData_shouldReturnCorrectValue() {
         var result = day07.part2("src/main/resources/day07.txt");
-        assertThat(result).isEqualTo(-1);
+        assertThat(result).isEqualTo(98231647);
     }
 }
