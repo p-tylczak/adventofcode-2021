@@ -23,12 +23,12 @@ class Day08Test {
     @Test
     void part2_whenTestData_shouldReturnCorrectValue() {
         var result = day08.part2("src/test/resources/day08.txt");
-        assertThat(result).isEqualTo(168);
+        assertThat(result).isEqualTo(61229);
     }
 
     @Test
     void part2_whenRealData_shouldReturnCorrectValue() {
         var result = day08.part2("src/main/resources/day08.txt");
-        assertThat(result).isEqualTo(98231647);
+        assertThat(result).isEqualTo(933305L);
     }
 }
