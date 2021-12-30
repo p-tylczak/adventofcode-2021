@@ -1,17 +1,12 @@
 package com.softhale.day12;
 
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 import java.util.Stack;
 import java.util.concurrent.atomic.AtomicInteger;
 
-public class GraphPathCounterPart1<T> {
-
-    private final Map<T, LinkedList<T>> nodes;
-
-    public GraphPathCounterPart1(Map<T, LinkedList<T>> nodes) {
-        this.nodes = nodes;
-    }
+public record GraphPathCounterPart1<T>(Map<T, LinkedList<T>> nodes) {
 
     public int countPaths(T from, T to) {
         var pathCount = new AtomicInteger();
@@ -31,14 +26,19 @@ public class GraphPathCounterPart1<T> {
 
         if (from.equals(to)) {
             pathCount.incrementAndGet();
-
         } else {
-            for (T node : nodes.get(from).stream().filter(n -> !(isSmallCave(n) && visitedNodes.contains(n))).sorted().toList()) {
+            for (T node : filteredNodes(from, visitedNodes)) {
                 countPaths(node, to, pathCount, visitedNodes);
             }
         }
 
         visitedNodes.pop();
+    }
+
+    private List<T> filteredNodes(T from, Stack<T> visitedNodes) {
+        return nodes.get(from).stream()
+                .filter(n -> !(isSmallCave(n) && visitedNodes.contains(n)))
+                .toList();
     }
 
     private boolean isSmallCave(T node) {
