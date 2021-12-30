@@ -17,18 +17,18 @@ class Day12Test {
     @Test
     void part1_whenRealData_shouldReturnCorrectValue() {
         var result = day12.part1("src/main/resources/day12.txt");
-        assertThat(result).isEqualTo(-1L);
+        assertThat(result).isEqualTo(3230L);
     }
 
     @Test
     void part2_whenTestData_shouldReturnCorrectValue() {
         var result = day12.part2("src/test/resources/day12.txt");
-        assertThat(result).isEqualTo(-1L);
+        assertThat(result).isEqualTo(3509L);
     }
 
     @Test
     void part2_whenRealData_shouldReturnCorrectValue() {
         var result = day12.part2("src/main/resources/day12.txt");
-        assertThat(result).isEqualTo(-1L);
+        assertThat(result).isEqualTo(83475L);
     }
 }
