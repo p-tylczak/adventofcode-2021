@@ -1,16 +1,12 @@
 package com.softhale.day12;
 
-import com.softhale.utils.BoardUtils;
 import com.softhale.utils.ParserUtils;
 import com.softhale.utils.UndirectedGraph;
 import org.apache.commons.collections4.keyvalue.DefaultKeyValue;
 
-import java.util.Stack;
-
 public class Day12 {
 
     private final ParserUtils parserUtils = new ParserUtils();
-    private final BoardUtils boardUtils = new BoardUtils();
 
     public long part1(String filePath) {
         var edges = parserUtils.readLines(filePath).stream()
