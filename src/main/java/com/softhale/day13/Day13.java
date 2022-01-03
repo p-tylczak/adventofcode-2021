@@ -44,17 +44,7 @@ public class Day13 {
             transformedPoints.addAll(transformed);
         }
 
-        var pointsByLocation = transformedPoints.stream()
-                .collect(Collectors.toMap(p -> p.x + ":" + p.y, Function.identity()));
-
-        for (int y = 0; y < 6; y++) {
-            for (int x = 0; x < 39; x++) {
-                var point = pointsByLocation.get(x + ":" + y) == null ? "." : "#";
-                System.out.print(point);
-            }
-
-            System.out.println();
-        }
+        print(transformedPoints);
 
         return "UCLZRAZU";
     }
@@ -95,5 +85,19 @@ public class Day13 {
         return dotCoordinates.stream()
                 .map(c -> c.y > y ? new Point(c.x, c.y - 2 * (c.y - y)) : c)
                 .collect(Collectors.toSet());
+    }
+
+    private void print(Set<Point> points) {
+        var pointsByLocation = points.stream()
+                .collect(Collectors.toMap(p -> p.x + ":" + p.y, Function.identity()));
+
+        for (int y = 0; y < 6; y++) {
+            for (int x = 0; x < 39; x++) {
+                var point = pointsByLocation.get(x + ":" + y) == null ? "." : "#";
+                System.out.print(point);
+            }
+
+            System.out.println();
+        }
     }
 }
