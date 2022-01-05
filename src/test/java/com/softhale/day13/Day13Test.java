@@ -1,6 +1,5 @@
 package com.softhale.day13;
 
-import com.softhale.day12.Day12;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
