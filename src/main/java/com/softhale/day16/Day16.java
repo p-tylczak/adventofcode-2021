@@ -1,70 +1,92 @@
 package com.softhale.day16;
 
-import com.softhale.utils.BoardUtils;
 import com.softhale.utils.ParserUtils;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Map;
+import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicLong;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class Day16 {
 
     private final ParserUtils parserUtils = new ParserUtils();
-    private final BoardUtils boardUtils = new BoardUtils();
+    private final AtomicLong versionSum = new AtomicLong();
 
-    public long part1(String filePath) {
+    public Long part1(String filePath) {
+        decode(filePath);
+        return versionSum.get();
+    }
+
+    public Long part2(String filePath) {
+        return decode(filePath);
+    }
+
+    private Long decode(String filePath) {
         var binaryString = Stream.of(parserUtils.readFileContent(filePath).trim().split(""))
                 .map(d -> d.charAt(0))
                 .map(this::hexToBin)
                 .collect(Collectors.joining());
 
-        var sumOfVersions = new AtomicInteger();
-        var bitPointer = new AtomicInteger();
-        decodePacket(bitPointer, sumOfVersions, binaryString);
-
-        return sumOfVersions.get();
+        return decodePacket(new AtomicInteger(), binaryString);
     }
 
-    private Map<String, Object> decodePacket(AtomicInteger bitPointer, AtomicInteger sumOfVersions, String binaryString) {
+    private Long decodePacket(AtomicInteger bitPointer, String binaryString) {
         var version = Integer.parseInt(binaryString.substring(bitPointer.get(), bitPointer.get() + 3), 2);
         var typeId = Integer.parseInt(binaryString.substring(bitPointer.get() + 3, bitPointer.get() + 6), 2);
 
+        versionSum.addAndGet(version);
         bitPointer.addAndGet(6);
-        sumOfVersions.addAndGet(version);
 
         return typeId == 4
                 ? literalValue(bitPointer, binaryString)
-                : operator(bitPointer, sumOfVersions, binaryString);
+                : operator(typeId, bitPointer, binaryString);
     }
 
-    private Map<String, Object> operator(AtomicInteger bitPointer, AtomicInteger sumOfVersions, String binaryString) {
+    private Long operator(int typeId, AtomicInteger bitPointer, String binaryString) {
         var lengthTypeId = binaryString.charAt(bitPointer.get());
+        bitPointer.addAndGet(1);
+
+        var decodedValues = new ArrayList<Long>();
 
         if (lengthTypeId == '0') {
-            var totalSubPacketLength = Integer.parseInt(binaryString.substring(bitPointer.get() + 1, bitPointer.get() + 16), 2);
+            var totalSubPacketLength = Integer.parseInt(binaryString.substring(bitPointer.get(), bitPointer.get() + 15), 2);
 
-            bitPointer.addAndGet(16);
+            bitPointer.addAndGet(15);
             int preSubPacketsPosition = bitPointer.get();
             do {
-                decodePacket(bitPointer, sumOfVersions, binaryString);
+                var decodedValue = decodePacket(bitPointer, binaryString);
+                decodedValues.add(decodedValue);
             } while (bitPointer.get() - preSubPacketsPosition < totalSubPacketLength);
 
         } else {
-            var subPacketCount = Integer.parseInt(binaryString.substring(bitPointer.get() + 1, bitPointer.get() + 12), 2);
-            bitPointer.addAndGet(12);
+            var subPacketCount = Integer.parseInt(binaryString.substring(bitPointer.get(), bitPointer.get() + 11), 2);
+            bitPointer.addAndGet(11);
 
             for (int count = 0; count < subPacketCount; count++) {
-                decodePacket(bitPointer, sumOfVersions, binaryString);
+                var decodedValue = decodePacket(bitPointer, binaryString);
+                decodedValues.add(decodedValue);
             }
         }
 
-        return Collections.emptyMap();
+        return handleTypeIds(typeId, decodedValues);
     }
 
-    private Map<String, Object> literalValue(AtomicInteger bitPointer, String binaryString) {
+    private Long handleTypeIds(int typeId, List<Long> values) {
+        return switch (typeId) {
+            case 0 -> values.stream().reduce(Long::sum).orElseThrow();
+            case 1 -> values.stream().reduce((l1, l2) -> l1 * l2).orElseThrow();
+            case 2 -> values.stream().min(Long::compareTo).orElseThrow();
+            case 3 -> values.stream().max(Long::compareTo).orElseThrow();
+            case 5 -> values.get(0) > values.get(1) ? 1L : 0L;
+            case 6 -> values.get(0) < values.get(1) ? 1L : 0L;
+            case 7 -> values.get(0).equals(values.get(1)) ? 1L : 0L;
+            default -> throw new IllegalStateException("Unexpected value: " + typeId);
+        };
+    }
+
+    private Long literalValue(AtomicInteger bitPointer, String binaryString) {
         var payload = new ArrayList<String>();
 
         checkPacket(
@@ -72,7 +94,7 @@ public class Day16 {
                 binaryString,
                 payload);
 
-        return Map.of("literalValue", Long.valueOf(String.join("", payload), 2));
+        return Long.valueOf(String.join("", payload), 2);
     }
 
     private void checkPacket(AtomicInteger bitPointer, String binaryString, ArrayList<String> payload) {
@@ -108,9 +130,5 @@ public class Day16 {
             case 'F' -> "1111";
             default -> throw new RuntimeException();
         };
-    }
-
-    public long part2(String filePath) {
-        return 0L;
     }
 }
